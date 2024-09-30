@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Dog Cards</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Container for the grid */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
+            gap: 20px; /* Space between cards */
+            padding: 20px;
+        }
+
+        /* Card styling */
+        .card {
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05); /* Slight zoom on hover */
+        }
+
+        /* Responsive layout */
+        @media (max-width: 1200px) {
+            .card-container {
+                grid-template-columns: repeat(3, 1fr); /* 3 columns on medium-large screens */
+            }
+        }
+
+        @media (max-width: 900px) {
+            .card-container {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card-container {
+                grid-template-columns: 1fr; /* 1 column on small screens */
+                gap: 15px;
+            }
+            .card {
+                margin: 0 auto;
+                width: 90%; /* Make sure the card doesn't take the full width */
+            }
+        }
+
+        .card img {
+            width: 100%; /* Make the image fill the card width */
+            height: auto;
+        }
+
+        .card-body {
+            text-align: center; /* Center-align card text */
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1 style="text-align: center;">Responsive Dog Cards</h1>
+    <div class="card-container" id="card-container"></div>
+
+    <script>
+        const cardContainer = document.getElementById('card-container');
+
+        // Define an async function to fetch the data
+        async function fetchDogsData() {
+            try {
+                const response = await axios.get('https://dogsb-30-9.onrender.com');
+                const data = response.data; // Loaded data from server
+
+                // Iterate over the data and add each card
+                data.forEach((item, index) => {
+                    const cardElement = createCard({ 
+                        number: index + 1, 
+                        name: item.name, 
+                        size: item.size, 
+                        age: item.age 
+                    });
+                    // Append the card element to the container
+                    cardContainer.innerHTML += cardElement; 
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error); // Handle any errors
+            }
+        }
+
+        // Function to create a card as a literal element
+        const createCard = (cardData) => {
+            return `
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="./dog.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Card ${cardData.number}</h5>
+                        <h5 class="card-title">Name: ${cardData.name}</h5>
+                        <h5 class="card-title">Size: ${cardData.size}</h5>
+                        <h5 class="card-title">Age: ${cardData.age}</h5>
+                    </div>
+                </div> 
+            `;
+        }
+
+        // Call the async function to fetch and load data
+        fetchDogsData();
+    </script>
+</body>
+</html>
